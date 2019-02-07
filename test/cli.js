@@ -36,6 +36,10 @@ const characteristics = Object.freeze({
 		set_color_magic_bytes: [0x00, 0x0f],
 		wait_for_reply: false
 	},
+	type3: {
+		set_color_magic_bytes: [0x01, 0x0f],
+		wait_for_reply: false
+	},
 });
 
 var commands = {
@@ -60,6 +64,11 @@ var commands = {
 		desc: "Turns a light off",
 		fn: turnoff,
 		args: ["ip", "type"]
+	},
+	"setlevel": {
+		desc: "Sets the brightness of a light",
+		fn: setlevel,
+		args: ["ip", "brightness", "speed"]
 	},
 	"setcolor": {
 		desc: "Sets the color of a light",
@@ -182,6 +191,17 @@ function setpattern(ip, pattern, speed, type) {
 	var c = new MHControl(ip, chars);
 
 	c.setPattern(pattern, speed, function(err, success) {
+		if(err) return console.log("Error:", err.message);
+		console.log((success) ? "success" : "failed");
+	});
+}
+
+function setlevel(ip, brightness, speed) {
+	var chars = characteristics["type3"];
+
+	var c = new MHControl(ip, chars);
+
+	c.setBrightness(brightness, speed, function(err, success) {
 		if(err) return console.log("Error:", err.message);
 		console.log((success) ? "success" : "failed");
 	});
